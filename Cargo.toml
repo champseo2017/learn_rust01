@@ -4,3 +4,6 @@ version = "0.1.0"
 edition = "2024"
 
 [dependencies]
+# เพิ่มบรรทัดนี้เพื่อบอก Cargo ว่าโปรเจกต์ของเราต้องใช้ rand crate
+# version "0.8.5" หมายถึง version ใดก็ได้ที่ >= 0.8.5 แต่ < 0.9.0
+rand = "0.8.5"
