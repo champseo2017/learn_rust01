@@ -1,30 +1,34 @@
 use std::io;
-use rand::Rng; // import Rng trait เข้ามาใน scope เพื่อให้ใช้ method สุ่มเลขได้
-use std::cmp::Ordering; // import Ordering enum เพื่อใช้ผลลัพธ์จากการเปรียบเทียบ
+use rand::Rng;
+use std::cmp::Ordering;
 
 fn main() {
     println!("Guess the number!");
 
-    // สร้างตัวแปรเก็บเลขลับ โดยเรียกใช้ generator แล้วสุ่มเลขในช่วง 1 ถึง 100
     let secret_number: i32 = rand::thread_rng().gen_range(1..=100);
+    println!("The secret number is: {}", secret_number);
 
-    println!("The secret number is: {secret_number}");
+    // ใช้ loop เพื่อให้ user เดาได้เรื่อยๆ แบบไม่จำกัด
+    loop {
+        println!("Please input your guess.");
 
-    println!("Please input your guess.");
+        let mut guess = String::new();
 
-    let mut guess = String::new();
+        io::stdin()
+            .read_line(&mut guess)
+            .expect("Failed to read line");
 
-    io::stdin()
-        .read_line(&mut guess)
-        .expect("Failed to read line");
+        // แปลง input เป็นตัวเลข ถ้าใส่ค่าอื่นที่ไม่ใช่ตัวเลข โปรแกรมจะ crash
+        let guess: i32 = guess.trim().parse().expect("Please type a number!");
 
-    // แปลง String เป็น i32 โดยใช้ parse() และ trim() เพื่อเอา newline ออก
-    let guess: i32 = guess.trim().parse().expect("Please type a number!");
-
-    // ใช้ match เพื่อเปรียบเทียบค่าที่เดา (guess) กับเลขลับ (secret_number)
-    match guess.cmp(&secret_number) {
-        Ordering::Less => println!("Too small!"),    // กรณีที่ค่าน้อยกว่า
-        Ordering::Greater => println!("Too big!"),   // กรณีที่ค่ามากกว่า
-        Ordering::Equal => println!("You win!"),     // กรณีที่ค่าเท่ากัน
-    }
+        // เปรียบเทียบค่าที่เดากับเลขลับ
+        match guess.cmp(&secret_number) {
+            Ordering::Less => println!("Too small!"),
+            Ordering::Greater => println!("Too big!"),
+            Ordering::Equal => {
+                println!("You win!");
+                break; // เพิ่ม break ที่นี่ เพื่อสั่งให้ออกจาก loop เมื่อทายถูก
+            }
+        }
+    } // จบ loop แล้ววนกลับไปทำงานข้างบนใหม่
 }
