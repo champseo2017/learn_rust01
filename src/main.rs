@@ -5,7 +5,7 @@ use std::cmp::Ordering;
 fn main() {
     println!("Guess the number!");
 
-    let secret_number: i32 = rand::thread_rng().gen_range(1..=100);
+    let secret_number: u32 = rand::thread_rng().gen_range(1..=100);
     println!("The secret number is: {}", secret_number);
 
     // ใช้ loop เพื่อให้ user เดาได้เรื่อยๆ แบบไม่จำกัด
@@ -18,8 +18,12 @@ fn main() {
             .read_line(&mut guess)
             .expect("Failed to read line");
 
-        // แปลง input เป็นตัวเลข ถ้าใส่ค่าอื่นที่ไม่ใช่ตัวเลข โปรแกรมจะ crash
-        let guess: i32 = guess.trim().parse().expect("Please type a number!");
+        // เปลี่ยนจาก .expect() มาใช้ match เพื่อจัดการ error ได้อย่างยืดหยุ่น
+        // สังเกตว่าเราเปลี่ยน type เป็น u32 ตามตัวอย่าง
+        let guess: u32 = match guess.trim().parse() {
+            Ok(num) => num,      // ถ้าแปลงเป็นตัวเลขสำเร็จ (Ok) ก็ให้ค่าตัวเลขนั้นออกมา
+            Err(_) => continue,  // ถ้าแปลงไม่สำเร็จ (Err) ให้ข้ามไปเริ่ม loop รอบใหม่ด้วย continue
+        };
 
         // เปรียบเทียบค่าที่เดากับเลขลับ
         match guess.cmp(&secret_number) {
